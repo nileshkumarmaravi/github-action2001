@@ -1,31 +1,31 @@
-name: Environment Variables Demo
+name: Multi Job Pipeline
 
 on:
   push:
     branches:
       - main
 
-env:
-  APP_NAME: github-actions-demo
-
 jobs:
-  demo-job:
+  build:
     runs-on: ubuntu-latest
-
-    env:
-      JOB_ENV: production
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use workflow and job env
+      - name: Build step
         run: |
-          echo "App Name: $APP_NAME"
-          echo "Job Environment: $JOB_ENV"
+          echo "Building application"
 
-      - name: Step level env
-        env:
-          STEP_ENV: step-only
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test step
         run: |
-          echo "Step Env: $STEP_ENV"
+          echo "Running tests"
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy step
+        run: |
+          echo "Deploying application"
+
